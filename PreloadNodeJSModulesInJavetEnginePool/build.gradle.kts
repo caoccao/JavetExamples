@@ -27,8 +27,21 @@ dependencies {
     implementation("com.caoccao.javet:javet:$javetVersion")
     implementation("com.caoccao.javet:javet-$jsRuntimeTimeType-$osType-$archType$i18nType:$javetVersion")
 
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation("commons-io:commons-io:2.19.0")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "${project.group}.Main"
+    }
+    configurations["compileClasspath"].forEach { file: File ->
+        from(zipTree(file.absoluteFile))
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 tasks.test {

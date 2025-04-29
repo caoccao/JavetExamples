@@ -1,0 +1,23 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      jsonata:
+        specifier: ^2.0.6
+        version: 2.0.6
+
+packages:
+
+  jsonata@2.0.6:
+    resolution: {integrity: sha512-WhQB5tXQ32qjkx2GYHFw2XbL90u+LLzjofAYwi+86g6SyZeXHz9F1Q0amy3dWRYczshOC3Haok9J4pOCgHtwyQ==}
+    engines: {node: '>= 8'}
+
+snapshots:
+
+  jsonata@2.0.6: {}
