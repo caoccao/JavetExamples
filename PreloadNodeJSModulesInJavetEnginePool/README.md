@@ -1,6 +1,9 @@
 # Preload Node.js Modules in Javet Engine Pool
 
-It is quite common to load Node.js modules in the Javet Engine Pool under the V8 mode. This project demonstrates how to do that.
+It is quite common to load Node.js modules in the Javet Engine Pool under the V8 mode. This project demonstrates how to do that. Here are the Node.js modules used:
+
+- [decimal.js](https://mikemcl.github.io/decimal.js/)
+- [JSONata](https://jsonata.org/)
 
 ## Prerequisites
 

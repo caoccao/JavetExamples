@@ -12,13 +12,14 @@ public class MyJavetEngine extends JavetEngine<V8Runtime> {
 
     public MyJavetEngine(IJavetEnginePool<V8Runtime> iJavetEnginePool, V8Runtime v8Runtime) throws JavetException {
         super(iJavetEnginePool, v8Runtime);
+        // Register console interceptor.
         consoleInterceptor = new JavetStandardConsoleInterceptor(v8Runtime);
         consoleInterceptor.register(v8Runtime.getGlobalObject());
         v8Runtime.setV8ModuleResolver(new MyV8ModuleResolver());
         v8Runtime.setPromiseRejectCallback((event, promise, value) -> {
             try {
                 JavetEntityError javetEntityError = v8Runtime.toObject(value);
-                System.err.println(javetEntityError.getMessage());
+                getConfig().getJavetLogger().logError(javetEntityError.getMessage());
             } catch (JavetException e) {
                 throw new RuntimeException(e);
             }
@@ -28,7 +29,10 @@ public class MyJavetEngine extends JavetEngine<V8Runtime> {
     @Override
     protected void close(boolean forceClose) throws JavetException {
         if (forceClose) {
+            // Unregister console interceptor.
             consoleInterceptor.unregister(v8Runtime.getGlobalObject());
+            // Free memory.
+            v8Runtime.lowMemoryNotification();
             consoleInterceptor = null;
         }
         super.close(forceClose);

@@ -8,6 +8,8 @@ import com.caoccao.javet.values.reference.IV8Module;
 import java.io.IOException;
 
 public class MyV8ModuleResolver implements IV8ModuleResolver {
+    protected static final String GLOBAL = "global";
+
     @Override
     public IV8Module resolve(
             V8Runtime v8Runtime,
@@ -21,13 +23,11 @@ public class MyV8ModuleResolver implements IV8ModuleResolver {
                     case CMD -> {
                         var globalObject = v8Runtime.getGlobalObject();
                         try (var v8ValueObject = v8Runtime.createV8ValueObject()) {
-                            try {
-                                globalObject.set("global", v8ValueObject);
-                                v8Runtime.getExecutor(sourceCode).executeVoid();
-                                return v8Runtime.createV8Module(module.getModuleName(), v8ValueObject);
-                            } finally {
-                                globalObject.delete("global");
-                            }
+                            globalObject.set(GLOBAL, v8ValueObject);
+                            v8Runtime.getExecutor(sourceCode).executeVoid();
+                            return v8Runtime.createV8Module(module.getModuleName(), v8ValueObject);
+                        } finally {
+                            globalObject.delete(GLOBAL);
                         }
                     }
                     case ESM -> {
@@ -38,7 +38,7 @@ public class MyV8ModuleResolver implements IV8ModuleResolver {
                     default -> v8Runtime.getLogger().logWarn("Unknown module type " + module.getType().name());
                 }
             } catch (IOException e) {
-                v8Runtime.getLogger().logError(e, "Failed to load module " + module.getModuleName());
+                v8Runtime.getLogger().logError(e, "Failed to load module '" + module.getModuleName() + "'");
             }
         }
         return null;
