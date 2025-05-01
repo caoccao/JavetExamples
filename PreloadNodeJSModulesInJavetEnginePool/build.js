@@ -2,12 +2,15 @@ const fs = require('fs');
 const path = require('path');
 
 const libraries = {
+    'decimal.js': [
+        'node_modules/decimal.js/decimal.mjs',
+    ],
     'jsonata': [
         'node_modules/jsonata/jsonata.min.js',
-    ]
+    ],
 };
 
-// Validation
+// Validate
 Object.entries(libraries).forEach(([libraryName, sourceFilePaths]) => {
     sourceFilePaths.forEach((sourceFilePath) => {
         if (!fs.existsSync(sourceFilePath)) {
@@ -23,10 +26,14 @@ Object.entries(libraries).forEach(([libraryName, sourceFilePaths]) => {
         const sourceFileName = path.basename(sourceFilePath);
         const targetDirPath = path.join("src", "main", "resources", libraryName);
         const targetFilePath = path.join(targetDirPath, sourceFileName);
-        console.info(`Copy from ${sourceFilePath} to ${targetFilePath}`);
-        if (!fs.existsSync(targetDirPath)) {
-            fs.mkdirSync(targetDirPath, { recursive: true });
+        if (fs.existsSync(targetFilePath)) {
+            console.info(`File already exists: ${targetFilePath}`);
+        } else {
+            console.info(`Copy from ${sourceFilePath} to ${targetFilePath}`);
+            if (!fs.existsSync(targetDirPath)) {
+                fs.mkdirSync(targetDirPath, { recursive: true });
+            }
+            fs.copyFileSync(sourceFilePath, targetFilePath);
         }
-        fs.copyFileSync(sourceFilePath, targetFilePath);
     })
 });
